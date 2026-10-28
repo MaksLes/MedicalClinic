@@ -1,6 +1,7 @@
 package com.maksles.medicalclinic.controller;
 
 
+import com.maksles.medicalclinic.dto.ChangePasswordRequest;
 import com.maksles.medicalclinic.model.Patient;
 import com.maksles.medicalclinic.service.PatientService;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +20,7 @@ public class PatientController {
 
     //GET /patients
     @GetMapping
-    List<Patient> getPatients() {
+    public List<Patient> getPatients() {
         return patientService.getPatients();
     }
 
@@ -47,5 +48,12 @@ public class PatientController {
     @PutMapping("/{email}")
     public Patient updatePatient(@PathVariable String email, @RequestBody Patient patient) {
         return patientService.updatePatient(email, patient);
+    }
+
+    //PATCH bo zmieniamhy tylko jedno pole zasobu
+    @PatchMapping("/{email}/password")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void changePassword(@PathVariable String email, @RequestBody ChangePasswordRequest request) {
+        patientService.changePassword(email, request.password());
     }
 }
