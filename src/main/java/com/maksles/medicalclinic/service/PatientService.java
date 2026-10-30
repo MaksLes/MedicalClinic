@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class PatientService {
@@ -29,7 +30,7 @@ public class PatientService {
     //MED-997 pkt 2: dwoch pacjentów nie może mieć tego samego maila
     public Patient addPatient(Patient patient) {
         if (isBlank(patient.getEmail())) {
-            throw new PatientValidationException("Email jest wymagany");
+            throw new PatientValidationException("Email is required");
         }
         //findByEmail porownuje porownuje bez wielkosci liter
         if (repository.findByEmail(patient.getEmail()).isPresent()) {
@@ -51,21 +52,19 @@ public class PatientService {
 
         //proba podmiany numeru dowodu konczy sie bledem zamiast zignorowania
         if (updatedPatient.getIdCardNo() != null && !updatedPatient.getIdCardNo().equals(existing.getIdCardNo())) {
-            throw new PatientValidationException("Numer dowodu nie może zostać zmieniony");
+            throw new PatientValidationException("ID card number cannot be changed");
         }
-
         existing.setFirstName(updatedPatient.getFirstName());
         existing.setLastName(updatedPatient.getLastName());
         existing.setPhoneNumber(updatedPatient.getPhoneNumber());
         existing.setBirthday(updatedPatient.getBirthday());
-
         return existing;
     }
 
     //jedyne miejsce w systemie gdzie mozna zmienic haslo
     public void changePassword(String email, String newPassword) {
         if (isBlank(newPassword)) {
-            throw new PatientValidationException("Hasło nie może pozostać puste");
+            throw new PatientValidationException("Password cannot be empty");
         }
         Patient patient = getPatient(email);
         patient.setPassword(newPassword);
